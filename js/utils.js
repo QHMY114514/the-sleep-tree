@@ -413,27 +413,24 @@ function gridRun(layer, func, data, id) {
 
 // # 自定义
 // 特殊数字简写
-let _86400 = new Decimal(86400);
-let _3600 = new Decimal(3600);
-let _100 = new Decimal(100);
-let _60 = new Decimal(60);
-let _50 = new Decimal(50);
-let _32 = new Decimal(32);
-let _30 = new Decimal(30);
-let _20 = new Decimal(20);
-let _16 = new Decimal(16);
-let _10 = new Decimal(10);
-let _9 = new Decimal(9);
-let _8 = new Decimal(8);
-let _7 = new Decimal(7);
-let _6 = new Decimal(6);
-let _5 = new Decimal(5);
-let _4 = new Decimal(4);
-let _3 = new Decimal(3);
-let _2 = new Decimal(2);
-let _1 = new Decimal(1);
-let _0 = new Decimal(0);
-let _h2 = divNum(_2);
+const _D86400 = _D(86400);
+const _D3600 = _D(3600);
+const _D60 = _D(60);
+const _D50 = _D(50);
+const _D30 = _D(30);
+const _D10 = _D(10);
+const _D8 = _D(8);
+const _D6 = _D(6);
+const _D5 = _D(5);
+const _D4 = _D(4);
+const _D3 = _D(3);
+const _D2 = _D(2);
+const _D1 = _D(1);
+const _D0 = _D(0);
+
+function _D(num) {
+	return new Decimal(num)
+}
 
 // 工具函数
 
@@ -442,12 +439,12 @@ let _h2 = divNum(_2);
  * @param {Decimal} dividend - 被除数
  * @param {Decimal} [divisor = 1] - 除数 *不推荐使用该参数,乖乖用.div()
  */
-function divNum(dividend, divisor = new Decimal(1)) {
+function divNum(dividend, divisor = _D(1)) {
 	return divisor.div(dividend);
 }
 // 2的幂次
 function pow2(pow) {
-	return _2.pow(new Decimal(pow))
+	return _D2.pow(_D(pow))
 }
 
 // 核心函数 - 自定义事件驱动
@@ -457,8 +454,9 @@ function myTicking(diff) {
 
 // 核心函数 - 时间流速
 function timeSpeed() {
-	return _1
-		.mul(hasUpgrade("m", 11) ? upgradeEffect("1", 11) : _1)
+	return _D1
+		.mul(hasAchievement("a", 2001) ? _D(1.1) : _D1)
+		.mul(hasUpgrade("m", 11) ? upgradeEffect("1", 11) : _D1)
 }
 
 // 核心函数 - 睡眠判定
@@ -472,11 +470,11 @@ function isSleep() {
 const randomString_chars = `ABCDEFGHJKLMNOPQRSTUWXYZabcdefghijklmnopqrstuwxyz1234567890?!;=+-/@#$%^&*~|\`"'\\()[]{},.乾狐离光          `;
 function randomString(length) {
 	let result = '';
-	
+
 	for (let i = 0; i < length; i++) {
-	  result += randomString_chars[Math.floor(Math.random() * randomString_chars.length)];
+		result += randomString_chars[Math.floor(Math.random() * randomString_chars.length)];
 	}
-	
+
 	return result;
 }
 

@@ -180,5 +180,5 @@ function ChineseCount(num) {
     
     const selectedBase = basenum[baseIndex];
     
-    return format(d.div(_10.pow(new Decimal(selectedBase.base)))) + selectedBase.code;
+    return format(d.div(_D10.pow(new Decimal(selectedBase.base)))) + selectedBase.code;
 }
