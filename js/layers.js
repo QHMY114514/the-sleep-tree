@@ -16,44 +16,64 @@ addLayer("a", {
     achievementPopups: true,
     achievements: {
         11: {
+            name: "虚假的梦境<br>真实的我",
+            tooltip: "现在就去睡觉还来得及<br>获得第一个思维",
+            done() { return player["m"].points.gte(1) }
+        },
+        12: {
             name: "真实的梦境<br>虚假的我",
-            tooltip: "现在马上去睡觉<br>还来得及",
-            done() { return options.theme == "fox" }
+            tooltip: "醒来,但不是在现实里<br>游戏时间达到06:00:00",
+            done() { return hasMilestone("m", 0) && player.gameTime.gte(21600) }
         },
         13: {
+            name: "该吃午饭了<br>今天吃鸡架",
+            tooltip: "如果没有在获得第一个成就前获得这个成就,一个隐藏成就将永远无法获得",
+            done() { return player.gameTime.gte(43200) }
+        },
+        14: {
             name: "在那以前<br>要多想",
-            tooltip: "这一次我变回孩子了",
-            done() { return options.theme == "fox" }
+            tooltip: '"想了以后呢?"<br>这一次我变回孩子了',
+            done() { return hasUpgrade("m", 12) }
         },
         //特殊成就
-        991: {
+        1001: {
             name: "🦊 Fox Style",
             tooltip: "[隐藏]使用狐狸主题",
             done() { return options.theme == "fox" },
-            unlocked() { return hasAchievement("a", 991) },
+            unlocked() { return hasAchievement("a", 1001) },
             style: {
                 color: "#FFFFFF",
                 backgroundColor: "#FFD700"
             },
         },
-        992: {
+        1002: {
             name: "🤥 Never Gonna Give You Up",
             tooltip: "[隐藏]你被骗了!",
             done() { return player.nevergonnagiveyouup },
-            unlocked() { return hasAchievement("a", 992) },
+            unlocked() { return hasAchievement("a", 1002) },
             style: {
                 color: "#FFFFFF",
                 backgroundColor: "#FFD700"
             },
         },
-        993: {
+        1003: {
             name: "🔗 请15分钟后再登录",
             tooltip: "[隐藏]喵~喵~<br>咕噜咕噜~",
             done() { return options.badWeb },
-            unlocked() { return hasAchievement("a", 993) },
+            unlocked() { return hasAchievement("a", 1003) },
             style: {
                 color: "#FFFFFF",
                 backgroundColor: "#FFD700"
+            },
+        },
+        2001: {
+            name: "😪 完全睡过头",
+            tooltip: "[限定]一觉睡了12小时",
+            done() { return !hasAchievement("a", 11) && hasAchievement("a", 13) },
+            unlocked() { return hasAchievement("a", 2001) },
+            style: {
+                color: "#FFFFFF",
+                backgroundColor: "#eb72ff"
             },
         },
     },
@@ -125,7 +145,7 @@ addLayer("m", {
         },
         12: {
             title: "思索",
-            description: "",
+            description: "还没想出效果",
             effect: function () {
                 return _0
             },
@@ -135,7 +155,7 @@ addLayer("m", {
             tooltip: "要多想",
             cost: _1,
             unlocked() {
-                return hasUpgrade("m",11)
+                return hasUpgrade("m", 11)
             }
         },
     },
@@ -157,7 +177,7 @@ addLayer("m", {
                         "`由于你被梗侵蚀过多,你睡觉时脑子里充斥着各种奇异的内容`")}
                     <br>
                     ${ifElseVirable("hasMilestone('m',0)", "v", "randomString(v.length)",
-                        `"解锁一系列新的新闻,且点击新闻栏可将游戏速度+棍母倍"`)}
+                            `"解锁一系列新的新闻,且点击新闻栏可将游戏速度+棍母倍"`)}
                     `
             },
             done() { return player[this.layer].points.gte(2) }
@@ -174,7 +194,7 @@ addLayer("m", {
                         "`恍惚之间,你进入了奇异的${randomString(2)},有人在看着你...`")}
                     <br>
                     ${ifElseVirable("hasMilestone('m',1)", "v", "randomString(v.length)",
-                        `"你由不可名状处汲取力量,受此影响,梦境获取×(1+想法)"`)}
+                            `"你由不可名状处汲取力量,受此影响,梦境获取×(1+想法)"`)}
                     `
             },
             done() { return player[this.layer].points.gte(3) }
