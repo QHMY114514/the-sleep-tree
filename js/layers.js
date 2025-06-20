@@ -143,7 +143,7 @@ addLayer("a", {
         4001: {
             name: "等价交换",
             tooltip: "[小游戏]解锁等价交换<br>你明明知道这里只能等,为什么还愿意等5分钟?",
-            done() { return player.gameTime.gte(_D(0)) },
+            done() { return player.gameTime.gte(_D(300)) },
             unlocked() { return hasAchievement("a", 4001) },
             style: {
                 color: "#FFFFFF",
