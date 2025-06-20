@@ -6,6 +6,7 @@ function getStartOptions() {
 	return {
 		autosave: true,
 		msDisplay: "always",
+		font: "",
 		theme: "fox",
 		hqTree: false,
 		offlineProd: true,
@@ -45,7 +46,7 @@ function changeTreeQuality() {
 }
 function toggleAuto(toggle) {
 	Vue.set(player[toggle[0]], [toggle[1]], !player[toggle[0]][toggle[1]]);
-	needCanvasUpdate=true
+	needCanvasUpdate = true
 }
 
 const MS_DISPLAYS = ["全部", "最新", "未完成", "无"];
@@ -53,8 +54,18 @@ const MS_DISPLAYS = ["全部", "最新", "未完成", "无"];
 const MS_SETTINGS = ["always", "last", "incomplete", "never"];
 
 function adjustMSDisp() {
-	options.msDisplay = MS_SETTINGS[(MS_SETTINGS.indexOf(options.msDisplay) + 1) % 4];
+	options.msDisplay = MS_SETTINGS[(MS_SETTINGS.indexOf(options.msDisplay) + 1) % MS_SETTINGS.length];
 }
+
+const FONT_DISPLAYS = ["默认", "Sligoil", "Gulax", "Step mono", "Unica One"];
+
+const FONT_SETTINGS = ["", "Sligoil", "Gulax", "Stepmono", "Unica"];
+
+function adjustFont() {
+	options.font = FONT_SETTINGS[(FONT_SETTINGS.indexOf(options.font) + 1) % FONT_SETTINGS.length];
+	document.body.style.setProperty("--Font", options.font);
+}
+
 function milestoneShown(layer, id) {
 	complete = player[layer].milestones.includes(id);
 

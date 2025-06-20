@@ -13,11 +13,13 @@ let modInfo = {
 
 // 在num和name中设置版本号
 let VERSION = {
-	num: "0.0",
+	num: "0.1",
 	name: ""
 }
 
 let changelog = `<h1>更新日志:</h1><br>
+	<h3>v0.1 | 2025/6/20</h3><br>
+	更新了等价交换小游戏<br><br>
 	<h3>v0.0 | 2025/6/16</h3><br>
 	更新了基础游戏内容`
 
@@ -30,18 +32,14 @@ function getStartPoints() {
 	return new Decimal(modInfo.initialStartPoints)
 }
 
-// 决定是否显示点数/秒
+// 决定是否醒着
 function canGenPoints() {
 	return isSleep()
 }
 
 // 计算点数/秒！
 function getPointGen() {
-	if (!canGenPoints())
-		return new Decimal(0)
-
-	let gain = new Decimal(1).div(new Decimal(600)).mul(timeSpeed())
-	return gain
+	return finalGain()
 }
 
 // 你可以在此添加应该存入"player"并保存的非图层相关变量，以及默认值
@@ -49,14 +47,20 @@ function addedPlayerData() {
 	return {
 		// 时间
 		gameTime: new Decimal(0),
-		sleeptime: new Decimal(21600),
-		// 新闻
-		news: {
-			index: 0,
-			text: "",
-			charIndex: 0,
-			lastUpdate: 0,
-			isRotating: false
+		sleepTime: new Decimal(21600),
+		// 参数
+		M: {
+			Mv: {
+				1: _D1
+			},
+		},
+		// 小游戏参数
+		// 等价交换
+		P: {
+			TS: _D1, //  时间流速
+			Mk: _D1, //  能量收集器
+			Inf: _D0, // 无限燃料
+			Clear: 0, // 通关次数
 		},
 		// 隐藏成就
 		nevergonnagiveyouup: false
@@ -66,7 +70,12 @@ function addedPlayerData() {
 // 在页面顶部显示新闻
 var displayNews = [
 	function () {
-		return player.news ? player.news.text : getNewsList()[0];
+		return `<div style="
+		width: calc(100% - 50px);
+		background-color: rgba(255,255,255,0.2);
+		margin: 5px auto;
+		border: solid 3px rgba(0,0,0,0.5);
+		"><span style="opacity: ${news.opacity};">${news.text}</span></div>`;
 	}
 ];
 

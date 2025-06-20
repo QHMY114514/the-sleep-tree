@@ -119,16 +119,16 @@ var systemComponents = {
 			<span>
 			现实时间: <h3 class="overlayThing" id="points">{{new Date().toLocaleString('zh', { timeZone: 'Asia/Shanghai' })}}</h3>
 			</span>
+			<span v-if="showGameTime()">
 			<br>
-			<span>
 			游戏时间: <h3 class="overlayThing" id="points">{{showTime(player.gameTime)}}</h3>
 			</span>
-			<span>
+			<span v-if="timeSpeed().neq(_D1)">
 			<br>
 			时间流速: <h3 class="overlayThing" id="points">{{format(timeSpeed())}}x</h3>
 			</span>
-			<br>
 			<span v-if="player.offTime !== undefined" class="overlayThing">
+			<br>
 			离线时间: {{formatTime(player.offTime.remain)}}<br>
 			</span>
 		</div>
@@ -143,7 +143,11 @@ var systemComponents = {
         <h3>{{VERSION.withName}}</h3>
         <span v-if="modInfo.author">
             <br>
-            Made by {{modInfo.author}}	
+            作者 {{modInfo.author}}
+        </span>
+        <span>
+            <br>
+            模组树汉化 乾狐离光
         </span>
         <br>
         <br>
@@ -167,26 +171,32 @@ var systemComponents = {
         <table>
             <tr>
                 <td><button class="opt" onclick="save()">保存</button></td>
-                <td><button class="opt" onclick="toggleOpt('autosave')">自动保存: {{ options.autosave?"开":"关" }}</button></td>
+                <td><button class="opt" onclick="toggleOpt('autosave')">自动保存<br>{{ options.autosave?"开":"关" }}</button></td>
                 <td><button class="opt" onclick="hardReset()">硬重置</button></td>
-                <td><button class="opt" onclick="switchTheme()">主题: {{ getThemeName() }}</button></td>
+                <td><button class="opt" onclick="toggleOpt('offlineProd');">离线进度<br>{{ options.offlineProd?"开":"关" }}</button></td>
             </tr>
             <tr>
-                <td><button class="opt" onclick="adjustMSDisp()">显示里程碑:<br>{{ MS_DISPLAYS[MS_SETTINGS.indexOf(options.msDisplay)]}}</button></td>
-                <td><button class="opt" onclick="toggleOpt('hideChallenges')">已完成挑战:<br>{{ options.hideChallenges?"隐藏":"显示" }}</button></td>
-                <td><button class="opt" onclick="toggleOpt('hqTree')">3D树: {{ options.hqTree?"开":"关" }}</button></td>
-                <td><button class="opt" onclick="toggleOpt('forceOneTab'); needsCanvasUpdate = true">页面布局:<br>{{ options.forceOneTab?"单页面":"双页面" }}</button></td>
-            </tr>
-            <tr>
-                <td><button class="opt" onclick="toggleOpt('offlineProd');">离线进度: {{ options.offlineProd?"开":"关" }}</button></td>
                 <td><button class="opt" onclick="exportSave()">导出存档<br/>到剪贴板</button></td>
                 <td><button class="opt" onclick="importSave()">导入存档</button></td>
+                <td><button class="opt" onclick="adjustMSDisp()">显示里程碑<br>{{ MS_DISPLAYS[MS_SETTINGS.indexOf(options.msDisplay)] }}</button></td>
+                <td><button class="opt" onclick="toggleOpt('hideChallenges')">已完成挑战<br>{{ options.hideChallenges?"隐藏":"显示" }}</button></td>
+            </tr>
+            <tr>
+                <td><button class="opt" onclick="switchTheme()">主题<br>{{ getThemeName() }}</button></td>
+                <td><button class="opt" onclick="adjustFont()">英文字体<br>{{ FONT_DISPLAYS[FONT_SETTINGS.indexOf(options.font)] }}</button></td>
+                <td><button class="opt" onclick="toggleOpt('hqTree')">3D树<br>{{ options.hqTree?"开":"关" }}</button></td>
+                <td><button class="opt" onclick="toggleOpt('forceOneTab'); needsCanvasUpdate = true">页面布局<br>{{ options.forceOneTab?"单页面":"双页面" }}</button></td>
             </tr>
             <div style="height: 1000px;"></div>
             <tr>
-                <td><button class="opt" onclick="toggleOpt('badWeb');">联网获取新闻: {{ options.badWeb?"开":"关" }}</button></td>
+                <td><button class="opt" onclick="toggleOpt('badWeb');reinitializeNews();">联网获取新闻<br>{{ options.badWeb?"开":"关" }}</button></td>
             </tr>
-        </table>`
+        </table>
+		`
+	},
+
+	'mypic': {
+		template: `<img v-if="options.badWeb" src="https://api.1550187725.workers.dev/" alt="图片未加载" width= "50%" style="border-radius: 10%"/>`
 	},
 
 	'back-button': {

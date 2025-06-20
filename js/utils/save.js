@@ -216,6 +216,8 @@ function load() {
 	updateTemp();
 	updateTabFormats()
 	loadVue();
+
+	document.body.style.setProperty("--Font", options.font);
 }
 
 function loadOptions() {
@@ -248,7 +250,7 @@ function NaNcheck(data) {
 			if (!NaNalert) {
 				clearInterval(interval);
 				NaNalert = true;
-				alert("Invalid value found in player, named '" + item + "'. Please let the creator of this mod know! You can refresh the page, and you will be un-NaNed.")
+				alert(`有一个值发生了错误: "${item}". 请告诉这个模组树的作者. 你现在可以刷新这个页面,然后页面将会回溯至你的上一步操作.`)
 				return
 			}
 		}

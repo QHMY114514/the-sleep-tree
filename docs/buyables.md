@@ -33,7 +33,7 @@ buyables: {
 
 - title: **可选**。在 buyable 的顶端显示，可以使用函数来实现动态文本。
 
-- cost(): 下一次购买的价格，有一个可选的参数 x，表示第 x + 1 次购买的加个(x 是一个 `Decimal`)。
+- cost(): 下一次购买的价格，有一个可选的参数 x，表示第 x + 1 次购买的价格(x 是一个 `Decimal`)。
     如果需要多种货币，可以返回一个对象
                     
 - effect(): **可选**。返回基于当前 buyable 数量提供的增益，有一个可选的参数 x，表示 buyable 的数量是 x。 
@@ -70,7 +70,7 @@ buyables: {
 - canSellOne/canSellAll(): **可选**。返回一个 Boolean，表示是否可以卖一个或者卖全部。
 
 
-如果想要增加一个转生按钮或者其他类似的东西，在**主 buyable** 对象中添加 respecBuyables 函数（而不是在单个 buyable 中）。
+如果想要增加一个转生按钮或者其他类似的东西，在**主 buyables** 对象中添加 respecBuyables 函数（而不是在单个 buyable 中）。
 你可以用这些函数： 
 
 - respec(): **可选**。当转生按钮被按下以及确认后调用此函数。

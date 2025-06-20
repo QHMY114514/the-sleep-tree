@@ -1,7 +1,7 @@
 * {
 	transition-duration: 0.5s;
 	text-align: center;
-	font-family: "Microsoft YaHei";
+	font-family: var(--Font, "Microsoft YaHei");
 	font-weight: bold;
 	table-align: center;
 	margin: auto;

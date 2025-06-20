@@ -415,6 +415,7 @@ function gridRun(layer, func, data, id) {
 // 特殊数字简写
 const _D86400 = _D(86400);
 const _D3600 = _D(3600);
+const _D100 = _D(100);
 const _D60 = _D(60);
 const _D50 = _D(50);
 const _D30 = _D(30);
@@ -427,13 +428,13 @@ const _D3 = _D(3);
 const _D2 = _D(2);
 const _D1 = _D(1);
 const _D0 = _D(0);
+const _DInf = _D(1.7976931348623157).mul(pow10(308));
 
 function _D(num) {
 	return new Decimal(num)
 }
 
 // 工具函数
-
 /**
  * 请用于以1为倒数的数的简便写法
  * @param {Decimal} dividend - 被除数
@@ -446,23 +447,67 @@ function divNum(dividend, divisor = _D(1)) {
 function pow2(pow) {
 	return _D2.pow(_D(pow))
 }
+// 10的幂次
+function pow10(pow) {
+	return _D10.pow(_D(pow))
+}
 
 // 核心函数 - 自定义事件驱动
 function myTicking(diff) {
 	player.gameTime = (player.gameTime.add(timeSpeed().mul(diff)));
+	player.M.Mv[1] = _D(1.5).add(
+	(player.gameTime.div(_D60).div(_D(Math.PI))).cos().mul(_D(1.5))
+	)
+}
+
+// 核心函数 - 睡眠时点数获取
+function sleepGain() {
+	return divNum(_D(600))
+		.mul(timeSpeed())
+		.mul(hasUpgrade("m", 12) ? upgradeEffect("m", 12) : _D1)
+		.mul(hasMilestone("m", 2) ? player.M.Mv[1] : _D1)
+}
+
+// 核心函数 - 醒着时点数获取
+function awakeGain() {
+	// 升级使我醒着也能赚梦境
+	if (!canGenPoints()) {
+		return sleepGain()
+			.pow(
+				_D1
+					.mul(hasUpgrade("m", 14) ? upgradeEffect("m", 14) : _D1)
+			)
+			.mul(
+				(hasUpgrade("m", 14) ? _D1 : _D0)
+			)
+	}
+	return sleepGain();
+}
+
+function finalGain() {
+	return awakeGain()
+		.mul(Boolean(getClickableState("m", 11)) ? clickableEffect("m", 11)[1] : _D1)
 }
 
 // 核心函数 - 时间流速
 function timeSpeed() {
 	return _D1
 		.mul(hasAchievement("a", 2001) ? _D(1.1) : _D1)
-		.mul(hasUpgrade("m", 11) ? upgradeEffect("1", 11) : _D1)
+		.mul(hasAchievement("a", 2002) ? _D(1.1) : _D1)
+		.mul(hasUpgrade("m", 11) ? upgradeEffect("m", 11) : _D1)
+		.mul(hasUpgrade("m", 13) ? upgradeEffect("m", 13) : _D1)
+		.mul(Boolean(getClickableState("m", 11)) ? clickableEffect("m", 11)[0] : _D1)
 }
 
 // 核心函数 - 睡眠判定
 function isSleep() {
-	return hasMilestone("m", 0) ? true :
-		player.gameTime.gte(player.sleepTime)
+	return !hasMilestone("m", 0) ? true :
+		player.gameTime.mod(_D86400).lte(player.sleepTime)
+}
+
+// 显示函数
+function showGameTime() {
+	return hasUpgrade("m", 13)
 }
 
 // 你知道的太多了
@@ -563,52 +608,81 @@ function getNewsList() {
 				"510 Not Extended",
 				"511 Network Authentication Required",
 			]
-			: [`如果你在设置中打开了"从互联网获取新闻,你就能够获得一些新的新闻"`]
+			: [`如果你在设置中打开了"联网获取新闻",你就能够获得一些新的新闻`]
 		)
 	]
 }
 
+// 在player中保存新闻文字会导致新闻无法被保存
+var news = {
+	index: 0,
+	text: "",
+	charIndex: 0,
+	lastUpdate: 0,
+	isRotating: false,
+	completeTime: 0,
+	fadeStartTime: 0,
+	opacity: 1
+}
+
 function updateNewsDisplay() {
-	if (!player.news) return;
-
 	const newsList = getNewsList();
-	const currentNews = newsList[player.news.index];
+	const currentNews = newsList[news.index];
 
-	if (!player.news.isRotating) {
-		player.news.text = getNextCharacter(currentNews, 0);
-		player.news.charIndex = 1;
-		player.news.isRotating = true;
-		player.news.lastUpdate = Date.now();
-		player.news.completeTime = 0;
+	// 初始化新新闻
+	if (!news.isRotating) {
+		news.text = getNextCharacter(currentNews, 0);
+		news.charIndex = 1;
+		news.isRotating = true;
+		news.lastUpdate = Date.now();
+		news.completeTime = 0;
+		news.fadeStartTime = 0;
+		news.opacity = 1;
 		return;
 	}
 
 	const now = Date.now();
-	const timeDiff = now - player.news.lastUpdate;
 
+	if (news.fadeStartTime > 0) {
+		const fadeDuration = 1000;
+		const fadeProgress = Math.min((now - news.fadeStartTime) / fadeDuration, 1);
+
+		news.opacity = 1 - Math.pow(fadeProgress, 2);
+
+		if (fadeProgress >= 1) {
+			const oldIndex = news.index;
+			do {
+				news.index = Math.floor(Math.random() * newsList.length);
+			} while (oldIndex === news.index);
+
+			news.isRotating = false;
+			news.completeTime = 0;
+			news.fadeStartTime = 0;
+		}
+		return;
+	}
+
+	const timeDiff = now - news.lastUpdate;
 	if (timeDiff >= 125) {
 		const charsToAdd = Math.floor(timeDiff / 125);
-		let newCharIndex = player.news.charIndex;
+		let newCharIndex = news.charIndex;
 
 		for (let i = 0; i < charsToAdd && newCharIndex < currentNews.length; i++) {
 			newCharIndex = getNextCharIndex(currentNews, newCharIndex);
 		}
 
-		player.news.charIndex = Math.min(newCharIndex, currentNews.length);
-		player.news.text = currentNews.substring(0, player.news.charIndex);
-		player.news.lastUpdate = now;
+		news.charIndex = Math.min(newCharIndex, currentNews.length);
+		news.text = currentNews.substring(0, news.charIndex);
+		news.lastUpdate = now;
 
-		if (player.news.charIndex >= currentNews.length && player.news.completeTime === 0) {
-			player.news.completeTime = now;
+		if (news.charIndex >= currentNews.length && news.completeTime === 0) {
+			news.completeTime = now;
 		}
 
-		if (player.news.completeTime > 0 && now - player.news.completeTime >= 5000) {
-			const oldIndex = player.news.index;
-			do {
-				player.news.index = Math.floor(Math.random() * newsList.length);
-			} while (oldIndex == player.news.index);
-			player.news.isRotating = false;
-			player.news.completeTime = 0;
+		if (news.completeTime > 0 &&
+			now - news.completeTime >= 5000 &&
+			news.fadeStartTime === 0) {
+			news.fadeStartTime = now;
 		}
 	}
 
@@ -629,3 +703,13 @@ function updateNewsDisplay() {
 	}
 }
 
+function reinitializeNews() {
+	news.index = 0;
+	news.text = "";
+	news.charIndex = 0;
+	news.isRotating = false;
+	news.lastUpdate = Date.now();
+	news.completeTime = 0;
+	news.fadeStartTime = 0;
+	news.opacity = 1;
+}

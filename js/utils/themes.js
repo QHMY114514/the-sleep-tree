@@ -30,9 +30,10 @@ var colors = {
 		3: "#ce0c51",
 		color: "#ffdb73",
 		points: "#eb72ff",
+		superPoints: "#e60b92",
 		bought: "#36daef",
 		locked: "#f7bbd0",
-		background: "#6f2e45",
+		background: "#572a3a",
 		background_tooltip: "rgba(22, 86, 104, 0.75)",
 	},
 }
@@ -45,6 +46,7 @@ function changeTheme() {
 		document.body.style.setProperty('--points', colors_theme["points"]);
 		document.body.style.setProperty("--locked", colors_theme["locked"]);
 		document.body.style.setProperty("--bought", colors_theme["bought"]);
+		document.body.style.setProperty("--super-points", colors_theme["superPoints"] ?? colors_theme["points"]);
 	}
 	catch {
 		//do nothing

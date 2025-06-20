@@ -7,7 +7,7 @@
 	border-radius: 50%;
 	box-shadow: var(--hqProperty2a), var(--hqProperty2b);
 	font-size: 40px;
-	font-family: "Microsoft YaHei";
+	font-family: var(--Font, "Microsoft YaHei");
 	color: rgba(0, 0, 0, 0.5);
 	text-shadow: var(--hqProperty3);
 	padding: 0;
@@ -16,7 +16,7 @@
 
 .nodeLabel {
 	font: inherit;
-	font-family: "Microsoft YaHei";
+	font-family: var(--Font, "Microsoft YaHei");
 }
 
 .treeButton {
@@ -27,7 +27,7 @@
 	border-radius: 33%;
 	box-shadow: var(--hqProperty2a), var(--hqProperty2b);
 	font-size: 40px;
-	font-family: "Microsoft YaHei";
+	font-family: var(--Font, "Microsoft YaHei");
 	color: rgba(0, 0, 0, 0.5);
 	text-shadow: var(--hqProperty3);
 	padding: 0;
@@ -69,7 +69,7 @@
 	border-bottom: 0.7em solid transparent;
 	border-left: 0.3em solid transparent;
 	font-size: 10px;
-	overflow:auto;
+	overflow: auto;
 	pointer-events: none;
 }
 
@@ -90,16 +90,17 @@
 
 }
 
-.star:before, .star:after {
+.star:before,
+.star:after {
 	content: "";
-    width: 0;
-    height: 0;
-    position: absolute;
-    top: .6em;
-    left: -1em;
+	width: 0;
+	height: 0;
+	position: absolute;
+	top: .6em;
+	left: -1em;
 	border-right: 1em solid transparent;
-    border-bottom: 0.7em solid #ffcc00;
-    border-left: 1em solid transparent;
+	border-bottom: 0.7em solid #ffcc00;
+	border-left: 1em solid transparent;
 	transform: rotate(-35deg);
 }
 
